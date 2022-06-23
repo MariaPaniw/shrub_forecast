@@ -1,3 +1,10 @@
+
+# This script performs analyses as part of Paniw et al. XXXX
+# Please read the README file on GitHub for a workflow of the analyses
+
+# Created by: Maria Paniw
+# Date created: June 20, 2022
+
 rm(list = ls())
 
 library(coda)
@@ -7,6 +14,8 @@ library(ggplot2)
 library(ggnewscale)
 library(boot)
 library(patchwork)
+
+setwd("SET_WORKING_DIRECTORY")
 
 # #### PLOTS OF POSTERIORS 
 
