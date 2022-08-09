@@ -511,9 +511,9 @@ phiS.h1=phiS.h2=phiS.l=phiS.r=phiS.c=array(NA,c(nsites,nyears))
 
 G.h1=G.h2=G.l=G.r=G.c=array(NA,c(nsites,nyears))
 
- for(xx in 1:2100){ # loop over posterior parameters
-    
-    for(i in 1:nsites) { # Loop over sites
+for(xx in 1:2100){
+  
+  for(i in 1:nsites) { # Loop over sites
     
     #Initial abundance
     
@@ -527,99 +527,99 @@ G.h1=G.h2=G.l=G.r=G.c=array(NA,c(nsites,nyears))
     NS.r[i,1] <- CS.ros[i,1]
     NA.c[i,1] <- CA.cis[i,1]
     NS.c[i,1] <- CS.cis[i,1]
-
-# Initial neighbor
-
+    
+    # Initial neighbor
+    
     neigh.c[i,1] <- neigh.cis[i,1]
     neigh.l[i,1] <- neigh.lav[i,1]
     neigh.h2[i,1] <- neigh.hal2[i,1]
     neigh.h1[i,1] <- neigh.hal1[i,1]
     neigh.r[i,1] <- neigh.ros[i,1]
-
+    
     #Specify the model for years 2 through nYears
     for(t in 1:(nyears-1)) {
-    
-    
-# Halimium halimifolium
-
+      
+      # Halimium halimifolium
+      
       phiA.h1[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h1[xx] + out1$sims.list$a1.h1[xx] *rain[t]  + out1$sims.list$a3.h1[xx] * neigh.h1[i,t])))
       phiS.h1[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h1[xx] + out1$sims.list$b2.h1[xx] * log(NA.h1[i,t]+0.001))))
       
       G.h1[i,t] = rpois(1,out1$sims.list$gamma.h1[xx])
       
-      NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  phiS.h1[i,t] *  NS.h1[i,t]
-      NS.h1[i,t+1] <- (1 - phiS.h1[i,t] ) *  NS.h1[i,t] + G.h1[i,t]
-
-    nA.hal1[i,t+1,xx] = rpois(1,NA.h1[i,t+1])
-    nS.hal1[i,t+1,xx] = rpois(1,NS.h1[i,t+1])
-    
-    
-    
- # Halimium commutatum
-
-    phiA.h2[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h2[xx] + out1$sims.list$a2.h2[xx] * log(NA.h2[i,t]+0.001) + out1$sims.list$a3.h2[xx] * neigh.h2[i,t] )))
-    phiS.h2[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h2[xx] + out1$sims.list$b1.h2[xx] *rain[t] + out1$sims.list$b2.h2[xx] * log(NA.h2[i,t]+0.001)+ out1$sims.list$b3.h2[xx] * neigh.h2[i,t])))
-    
-    G.h2[i,t] = rpois(1,out1$sims.list$gamma.h2[xx])
-    
-    NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  phiS.h2[i,t] *  NS.h2[i,t]
-    NS.h2[i,t+1] <- (1 - phiS.h2[i,t] ) *  NS.h2[i,t] + G.h2[i,t]
-    
-    nA.hal2[i,t+1,xx] = rpois(1,NA.h2[i,t+1])
-    nS.hal2[i,t+1,xx] = rpois(1,NS.h2[i,t+1])
-
-
-# Lavandula stoechas 
-
-    phiA.l[i,t] <- 1/(1+exp(-( out1$sims.list$a0.l[xx] + out1$sims.list$a3.l[xx] * neigh.l[i,t]  )))
-    phiS.l[i,t] <- 1/(1+exp(-( out1$sims.list$b0.l[xx] + out1$sims.list$b2.l[xx] * log(NA.l[i,t]+0.001) + out1$sims.list$b3.l[xx] * neigh.l[i,t])))
-    
-    G.l[i,t] = rpois(1,out1$sims.list$gamma.l[xx])
-    
-    NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  phiS.l[i,t] *  NS.l[i,t]
-    NS.l[i,t+1] <- (1 - phiS.l[i,t] ) *  NS.l[i,t] + G.l[i,t]
-    
-    nA.lav[i,t+1,xx] = rpois(1,NA.l[i,t+1])
-    nS.lav[i,t+1,xx] = rpois(1,NS.l[i,t+1])
-
-## Rosmarinus officinalis
-   
-    phiA.r[i,t] <- 1/(1+exp(-( out1$sims.list$a0.r[xx] + out1$sims.list$a2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$a3.r[xx] * neigh.r[i,t])))
-    phiS.r[i,t] <- 1/(1+exp(-( out1$sims.list$b0.r[xx] + out1$sims.list$b2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$b3.r[xx] * neigh.r[i,t])))
-    
-    G.r[i,t] = rpois(1,out1$sims.list$gamma.r[xx])
-    
-    NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] +  phiS.r[i,t] *  NS.r[i,t]
-    NS.r[i,t+1] <- (1 - phiS.r[i,t] ) *  NS.r[i,t] + G.r[i,t]
-    
-    nA.ros[i,t+1,xx] = rpois(1,NA.r[i,t+1])
-    nS.ros[i,t+1,xx] = rpois(1,NS.r[i,t+1])
- 
-## Cistus libanotis 
-
-    phiA.c[i,t] <- 1/(1+exp(-( out1$sims.list$a0.c[xx] + out1$sims.list$a1.c[xx] *rain[t] + out1$sims.list$a2.c[xx] * log(NA.c[i,t]+0.001) + out1$sims.list$a3.c[xx] * neigh.c[i,t])))
-    phiS.c[i,t] <- 1/(1+exp(-( out1$sims.list$b0.c[xx] + out1$sims.list$b1.c[xx] *rain[t] + out1$sims.list$b2.c[xx] * log(NA.c[i,t]+0.001) )))
-    
-    G.c[i,t] = rpois(1,out1$sims.list$gamma.c[xx])
-    
-    NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  phiS.c[i,t] *  NS.c[i,t]
-    NS.c[i,t+1] <- (1 - phiS.c[i,t] ) *  NS.c[i,t] + G.c[i,t]
-    nA.cis[i,t+1,xx] = rpois(1,NA.c[i,t+1])
-    nS.cis[i,t+1,xx] = rpois(1,NS.c[i,t+1])
-
-###   Neighborhood
-
-    neigh.c[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
-    neigh.h1[i,t+1] <- log(NA.h2[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
-    neigh.h2[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
-    neigh.l[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
-    neigh.r[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.l[i,t+1]+NA.h2[i,t+1])
-
+      NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  out1$sims.list$t.h1[xx]*phiS.h1[i,t] *  NS.h1[i,t]
+      NS.h1[i,t+1] <- (1 - out1$sims.list$t.h1[xx])*phiS.h1[i,t] *  NS.h1[i,t] + G.h1[i,t]
+      
+      nA.hal1[i,t+1,xx] = rpois(1,NA.h1[i,t+1])
+      nS.hal1[i,t+1,xx] = rpois(1,NS.h1[i,t+1])
+      
+      
+      
+      # Halimium commutatum
+      
+      phiA.h2[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h2[xx] + out1$sims.list$a2.h2[xx] * log(NA.h2[i,t]+0.001) + out1$sims.list$a3.h2[xx] * neigh.h2[i,t] )))
+      phiS.h2[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h2[xx] +  out1$sims.list$b2.h2[xx] * log(NA.h2[i,t]+0.001)+ out1$sims.list$b3.h2[xx] * neigh.h2[i,t])))
+      
+      G.h2[i,t] = rpois(1,out1$sims.list$gamma.h2[xx])
+      
+      NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  out1$sims.list$t.h2[xx]*phiS.h2[i,t] *  NS.h2[i,t]
+      NS.h2[i,t+1] <- (1 - out1$sims.list$t.h2[xx])*phiS.h2[i,t] *  NS.h2[i,t] + G.h2[i,t]
+      
+      nA.hal2[i,t+1,xx] = rpois(1,NA.h2[i,t+1])
+      nS.hal2[i,t+1,xx] = rpois(1,NS.h2[i,t+1])
+      
+      
+      # Lavandula stoechas 
+      
+      phiA.l[i,t] <- 1/(1+exp(-( out1$sims.list$a0.l[xx] + out1$sims.list$a3.l[xx] * neigh.l[i,t]  )))
+      phiS.l[i,t] <- 1/(1+exp(-( out1$sims.list$b0.l[xx] + out1$sims.list$b2.l[xx] * log(NA.l[i,t]+0.001) + out1$sims.list$b3.l[xx] * neigh.l[i,t])))
+      
+      G.l[i,t] = rpois(1,out1$sims.list$gamma.l[xx])
+      
+      NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  out1$sims.list$t.l[xx]*phiS.l[i,t] *  NS.l[i,t]
+      NS.l[i,t+1] <- (1 - out1$sims.list$t.l[xx])*phiS.l[i,t] *  NS.l[i,t] + G.l[i,t]
+      
+      nA.lav[i,t+1,xx] = rpois(1,NA.l[i,t+1])
+      nS.lav[i,t+1,xx] = rpois(1,NS.l[i,t+1])
+      
+      ## Rosmarinus officinalis
+      
+      phiA.r[i,t] <- 1/(1+exp(-( out1$sims.list$a0.r[xx] + out1$sims.list$a2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$a3.r[xx] * neigh.r[i,t])))
+      phiS.r[i,t] <- 1/(1+exp(-( out1$sims.list$b0.r[xx] + out1$sims.list$b2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$b3.r[xx] * neigh.r[i,t])))
+      
+      G.r[i,t] = rpois(1,out1$sims.list$gamma.r[xx])
+      
+      NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] + out1$sims.list$t.r[xx]* phiS.r[i,t] *  NS.r[i,t]
+      NS.r[i,t+1] <- (1 - out1$sims.list$t.r[xx])*phiS.r[i,t] *  NS.r[i,t] + G.r[i,t]
+      
+      nA.ros[i,t+1,xx] = rpois(1,NA.r[i,t+1])
+      nS.ros[i,t+1,xx] = rpois(1,NS.r[i,t+1])
+      
+      ## Cistus libanotis 
+      
+      phiA.c[i,t] <- 1/(1+exp(-( out1$sims.list$a0.c[xx] + out1$sims.list$a1.c[xx] *rain[t] + out1$sims.list$a2.c[xx] * log(NA.c[i,t]+0.001) + out1$sims.list$a3.c[xx] * neigh.c[i,t])))
+      phiS.c[i,t] <- out1$sims.list$phiS.c[xx]
+      
+      G.c[i,t] = rpois(1,out1$sims.list$gamma.c[xx])
+      
+      NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  out1$sims.list$t.c[xx]*phiS.c[i,t] *  NS.c[i,t]
+      NS.c[i,t+1] <- (1 - out1$sims.list$t.c[xx])*phiS.c[i,t] *  NS.c[i,t] + G.c[i,t]
+      
+      nA.cis[i,t+1,xx] = rpois(1,NA.c[i,t+1])
+      nS.cis[i,t+1,xx] = rpois(1,NS.c[i,t+1])
+      
+      ###   Neighborhood
+      
+      neigh.c[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
+      neigh.h1[i,t+1] <- log(NA.h2[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
+      neigh.h2[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
+      neigh.l[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
+      neigh.r[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.l[i,t+1]+NA.h2[i,t+1])
+      
     }
-
-    }
-     
- }
+    
+  }
+  
+}
 
 
 h1A=data.frame(mu=apply(nA.hal1[,nyears,],c(1),mean),
@@ -750,8 +750,8 @@ for(xx in 1:2100){
       
       G.h1[i,t] = rpois(1,out1$sims.list$gamma.h1[xx])
       
-      NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  phiS.h1[i,t] *  NS.h1[i,t]
-      NS.h1[i,t+1] <- (1 - phiS.h1[i,t] ) *  NS.h1[i,t] + G.h1[i,t]
+      NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  out1$sims.list$t.h1[xx]*phiS.h1[i,t] *  NS.h1[i,t]
+      NS.h1[i,t+1] <- (1 - out1$sims.list$t.h1[xx])*phiS.h1[i,t] *  NS.h1[i,t] + G.h1[i,t]
       
       nA.hal1[i,t+1,xx] = rpois(1,NA.h1[i,t+1])
       nS.hal1[i,t+1,xx] = rpois(1,NS.h1[i,t+1])
@@ -761,12 +761,12 @@ for(xx in 1:2100){
       # Halimium commutatum
       
       phiA.h2[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h2[xx] + out1$sims.list$a2.h2[xx] * log(NA.h2[i,t]+0.001) + out1$sims.list$a3.h2[xx] * neigh.h2[i,t] )))
-      phiS.h2[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h2[xx] + out1$sims.list$b1.h2[xx] *rain[t] + out1$sims.list$b2.h2[xx] * log(NA.h2[i,t]+0.001)+ out1$sims.list$b3.h2[xx] * neigh.h2[i,t])))
+      phiS.h2[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h2[xx] +  out1$sims.list$b2.h2[xx] * log(NA.h2[i,t]+0.001)+ out1$sims.list$b3.h2[xx] * neigh.h2[i,t])))
       
       G.h2[i,t] = rpois(1,out1$sims.list$gamma.h2[xx])
       
-      NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  phiS.h2[i,t] *  NS.h2[i,t]
-      NS.h2[i,t+1] <- (1 - phiS.h2[i,t] ) *  NS.h2[i,t] + G.h2[i,t]
+      NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  out1$sims.list$t.h2[xx]*phiS.h2[i,t] *  NS.h2[i,t]
+      NS.h2[i,t+1] <- (1 - out1$sims.list$t.h2[xx])*phiS.h2[i,t] *  NS.h2[i,t] + G.h2[i,t]
       
       nA.hal2[i,t+1,xx] = rpois(1,NA.h2[i,t+1])
       nS.hal2[i,t+1,xx] = rpois(1,NS.h2[i,t+1])
@@ -779,8 +779,8 @@ for(xx in 1:2100){
       
       G.l[i,t] = rpois(1,out1$sims.list$gamma.l[xx])
       
-      NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  phiS.l[i,t] *  NS.l[i,t]
-      NS.l[i,t+1] <- (1 - phiS.l[i,t] ) *  NS.l[i,t] + G.l[i,t]
+      NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  out1$sims.list$t.l[xx]*phiS.l[i,t] *  NS.l[i,t]
+      NS.l[i,t+1] <- (1 - out1$sims.list$t.l[xx])*phiS.l[i,t] *  NS.l[i,t] + G.l[i,t]
       
       nA.lav[i,t+1,xx] = rpois(1,NA.l[i,t+1])
       nS.lav[i,t+1,xx] = rpois(1,NS.l[i,t+1])
@@ -792,8 +792,8 @@ for(xx in 1:2100){
       
       G.r[i,t] = rpois(1,out1$sims.list$gamma.r[xx])
       
-      NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] +  phiS.r[i,t] *  NS.r[i,t]
-      NS.r[i,t+1] <- (1 - phiS.r[i,t] ) *  NS.r[i,t] + G.r[i,t]
+      NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] + out1$sims.list$t.r[xx]* phiS.r[i,t] *  NS.r[i,t]
+      NS.r[i,t+1] <- (1 - out1$sims.list$t.r[xx])*phiS.r[i,t] *  NS.r[i,t] + G.r[i,t]
       
       nA.ros[i,t+1,xx] = rpois(1,NA.r[i,t+1])
       nS.ros[i,t+1,xx] = rpois(1,NS.r[i,t+1])
@@ -801,12 +801,13 @@ for(xx in 1:2100){
       ## Cistus libanotis 
       
       phiA.c[i,t] <- 1/(1+exp(-( out1$sims.list$a0.c[xx] + out1$sims.list$a1.c[xx] *rain[t] + out1$sims.list$a2.c[xx] * log(NA.c[i,t]+0.001) + out1$sims.list$a3.c[xx] * neigh.c[i,t])))
-      phiS.c[i,t] <- 1/(1+exp(-( out1$sims.list$b0.c[xx] + out1$sims.list$b1.c[xx] *rain[t] + out1$sims.list$b2.c[xx] * log(NA.c[i,t]+0.001) )))
+      phiS.c[i,t] <- out1$sims.list$phiS.c[xx]
       
       G.c[i,t] = rpois(1,out1$sims.list$gamma.c[xx])
       
-      NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  phiS.c[i,t] *  NS.c[i,t]
-      NS.c[i,t+1] <- (1 - phiS.c[i,t] ) *  NS.c[i,t] + G.c[i,t]
+      NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  out1$sims.list$t.c[xx]*phiS.c[i,t] *  NS.c[i,t]
+      NS.c[i,t+1] <- (1 - out1$sims.list$t.c[xx])*phiS.c[i,t] *  NS.c[i,t] + G.c[i,t]
+      
       nA.cis[i,t+1,xx] = rpois(1,NA.c[i,t+1])
       nS.cis[i,t+1,xx] = rpois(1,NS.c[i,t+1])
       

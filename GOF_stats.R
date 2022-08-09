@@ -506,9 +506,9 @@ resid1S.h1=resid1S.h2=resid1S.l=resid1S.r=resid1S.c=array(NA,c(nsites,nyears))
 resid1S.pred.h1=resid1S.pred.h2=resid1S.pred.l=resid1S.pred.r=resid1S.pred.c=array(NA,c(nsites,nyears))
 
 
- for(xx in 1:2100){ # Loop over posterior parameter values
-    
-    for(i in 1:nsites) { # Loop over sites
+for(xx in 1:2100){
+  
+  for(i in 1:nsites) { # Loop over sites
     
     #Initial abundance
     
@@ -522,224 +522,225 @@ resid1S.pred.h1=resid1S.pred.h2=resid1S.pred.l=resid1S.pred.r=resid1S.pred.c=arr
     NS.r[i,1] <- CS.ros[i,1]
     NA.c[i,1] <- CA.cis[i,1]
     NS.c[i,1] <- CS.cis[i,1]
-
-# Initial neighbor
-
+    
+    # Initial neighbor
+    
     neigh.c[i,1] <- neigh.cis[i,1]
     neigh.l[i,1] <- neigh.lav[i,1]
     neigh.h2[i,1] <- neigh.hal2[i,1]
     neigh.h1[i,1] <- neigh.hal1[i,1]
     neigh.r[i,1] <- neigh.ros[i,1]
-
+    
     #Specify the model for years 2 through nYears
     for(t in 1:(nyears-1)) {
-    
-    
-# Halimium halimifolium
-
+      
+      
+      # Halimium halimifolium
+      
       phiA.h1[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h1[xx] + out1$sims.list$a1.h1[xx] *rain[t]  + out1$sims.list$a3.h1[xx] * neigh.h1[i,t])))
       phiS.h1[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h1[xx] + out1$sims.list$b2.h1[xx] * log(NA.h1[i,t]+0.001))))
       
       G.h1[i,t] = rpois(1,out1$sims.list$gamma.h1[xx])
       
-      NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  phiS.h1[i,t] *  NS.h1[i,t]
-      NS.h1[i,t+1] <- (1 - phiS.h1[i,t] ) *  NS.h1[i,t] + G.h1[i,t]
-
-    nA.hal1[i,t+1] = rpois(1,NA.h1[i,t+1])
-    nS.hal1[i,t+1] = rpois(1,NS.h1[i,t+1])
-    
-    
-    
- # Halimium commutatum
-
-    phiA.h2[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h2[xx] + out1$sims.list$a2.h2[xx] * log(NA.h2[i,t]+0.001) + out1$sims.list$a3.h2[xx] * neigh.h2[i,t] )))
-    phiS.h2[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h2[xx] + out1$sims.list$b1.h2[xx] *rain[t] + out1$sims.list$b2.h2[xx] * log(NA.h2[i,t]+0.001)+ out1$sims.list$b3.h2[xx] * neigh.h2[i,t])))
-    
-    G.h2[i,t] = rpois(1,out1$sims.list$gamma.h2[xx])
-    
-    NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  phiS.h2[i,t] *  NS.h2[i,t]
-    NS.h2[i,t+1] <- (1 - phiS.h2[i,t] ) *  NS.h2[i,t] + G.h2[i,t]
-    
-    nA.hal2[i,t+1] = rpois(1,NA.h2[i,t+1])
-    nS.hal2[i,t+1] = rpois(1,NS.h2[i,t+1])
-
-
-# Lavandula stoechas 
-
-    phiA.l[i,t] <- 1/(1+exp(-( out1$sims.list$a0.l[xx] + out1$sims.list$a3.l[xx] * neigh.l[i,t]  )))
-    phiS.l[i,t] <- 1/(1+exp(-( out1$sims.list$b0.l[xx] + out1$sims.list$b2.l[xx] * log(NA.l[i,t]+0.001) + out1$sims.list$b3.l[xx] * neigh.l[i,t])))
-    
-    G.l[i,t] = rpois(1,out1$sims.list$gamma.l[xx])
-    
-    NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  phiS.l[i,t] *  NS.l[i,t]
-    NS.l[i,t+1] <- (1 - phiS.l[i,t] ) *  NS.l[i,t] + G.l[i,t]
-    
-    nA.lav[i,t+1] = rpois(1,NA.l[i,t+1])
-    nS.lav[i,t+1] = rpois(1,NS.l[i,t+1])
-
-## Rosmarinus officinalis
-   
-    phiA.r[i,t] <- 1/(1+exp(-( out1$sims.list$a0.r[xx] + out1$sims.list$a2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$a3.r[xx] * neigh.r[i,t])))
-    phiS.r[i,t] <- 1/(1+exp(-( out1$sims.list$b0.r[xx] + out1$sims.list$b2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$b3.r[xx] * neigh.r[i,t])))
-    
-    G.r[i,t] = rpois(1,out1$sims.list$gamma.r[xx])
-    
-    NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] +  phiS.r[i,t] *  NS.r[i,t]
-    NS.r[i,t+1] <- (1 - phiS.r[i,t] ) *  NS.r[i,t] + G.r[i,t]
-    
-    nA.ros[i,t+1] = rpois(1,NA.r[i,t+1])
-    nS.ros[i,t+1] = rpois(1,NS.r[i,t+1])
- 
-## Cistus libanotis 
-
-    phiA.c[i,t] <- 1/(1+exp(-( out1$sims.list$a0.c[xx] + out1$sims.list$a1.c[xx] *rain[t] + out1$sims.list$a2.c[xx] * log(NA.c[i,t]+0.001) + out1$sims.list$a3.c[xx] * neigh.c[i,t])))
-    phiS.c[i,t] <- 1/(1+exp(-( out1$sims.list$b0.c[xx] + out1$sims.list$b1.c[xx] *rain[t] + out1$sims.list$b2.c[xx] * log(NA.c[i,t]+0.001) )))
-    
-    G.c[i,t] = rpois(1,out1$sims.list$gamma.c[xx])
-    
-    NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  phiS.c[i,t] *  NS.c[i,t]
-    NS.c[i,t+1] <- (1 - phiS.c[i,t] ) *  NS.c[i,t] + G.c[i,t]
-    nA.cis[i,t+1] = rpois(1,NA.c[i,t+1])
-    nS.cis[i,t+1] = rpois(1,NS.c[i,t+1])
-
-###   Neighborhood
-
-    neigh.c[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
-    neigh.h1[i,t+1] <- log(NA.h2[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
-    neigh.h2[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
-    neigh.l[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
-    neigh.r[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.l[i,t+1]+NA.h2[i,t+1])
-    
-
-    # # Goodness of fit ADULTS
-    # Hal 1
-    n.pred.h1 = rpois(1,NA.h1[i,t+1])
-    e1 <- NA.h1[i,t+1]
-    diff= CA.hal1[i,t+1] - e1
-    resid1.h1[i,t+1] <- diff
-    
-    diff.pred.h1 = n.pred.h1 - e1
-    resid1.pred.h1[i,t+1] <- diff.pred.h1
-    
-    # Hal 2
-    n.pred.h2 = rpois(1,NA.h2[i,t+1])
-    e1 <- NA.h2[i,t+1]
-    diff= CA.hal2[i,t+1] - e1
-    resid1.h2[i,t+1] <- diff
-    
-    diff.pred.h2 = n.pred.h2 - e1
-    resid1.pred.h2[i,t+1] <- diff.pred.h2
-    
-    # Lav
-    n.pred.l = rpois(1,NA.l[i,t+1])
-    e1 <- NA.l[i,t+1]
-    diff= CA.lav[i,t+1] - e1
-    resid1.l[i,t+1] <- diff
-    
-    diff.pred.l = n.pred.l - e1
-    resid1.pred.l[i,t+1] <- diff.pred.l
-    
-    # Ros
-    n.pred.r = rpois(1,NA.r[i,t+1])
-    e1 <- NA.r[i,t+1]
-    diff= CA.ros[i,t+1] - e1
-    resid1.r[i,t+1] <- diff
-    
-    diff.pred.r = n.pred.r - e1
-    resid1.pred.r[i,t+1] <- diff.pred.r
-    
-    # Cis
-    n.pred.c = rpois(1,NA.c[i,t+1])
-    e1 <- NA.c[i,t+1]
-    diff= CA.cis[i,t+1] - e1
-    resid1.c[i,t+1] <- diff
-    
-    diff.pred.c = n.pred.c - e1
-    resid1.pred.c[i,t+1] <- diff.pred.c
-    
-    # # Goodness of fit SAPLINGS
-    # Hal 1
-    n.pred.h1 = rpois(1,NS.h1[i,t+1])
-    e1 <- NS.h1[i,t+1]
-    diff= CS.hal1[i,t+1] - e1
-    resid1S.h1[i,t+1] <- diff
-    
-    diff.pred.h1 = n.pred.h1 - e1
-    resid1S.pred.h1[i,t+1] <- diff.pred.h1
-    
-    # Hal 2
-    n.pred.h2 = rpois(1,NS.h2[i,t+1])
-    e1 <- NS.h2[i,t+1]
-    diff= CS.hal2[i,t+1] - e1
-    resid1S.h2[i,t+1] <- diff
-    
-    diff.pred.h2 = n.pred.h2 - e1
-    resid1S.pred.h2[i,t+1] <- diff.pred.h2
-    
-    # Lav
-    n.pred.l = rpois(1,NS.l[i,t+1])
-    e1 <- NS.l[i,t+1]
-    diff= CS.lav[i,t+1] - e1
-    resid1S.l[i,t+1] <- diff
-    
-    diff.pred.l = n.pred.l - e1
-    resid1S.pred.l[i,t+1] <- diff.pred.l
-    
-    # Ros
-    n.pred.r = rpois(1,NS.r[i,t+1])
-    e1 <- NS.r[i,t+1]
-    diff= CS.ros[i,t+1] - e1
-    resid1S.r[i,t+1] <- diff
-    
-    diff.pred.r = n.pred.r - e1
-    resid1S.pred.r[i,t+1] <- diff.pred.r
-    
-    # Cis
-    n.pred.c = rpois(1,NS.c[i,t+1])
-    e1 <- NS.c[i,t+1]
-    diff= CS.cis[i,t+1] - e1
-    resid1S.c[i,t+1] <- diff
-    
-    diff.pred.c = n.pred.c - e1
-    resid1S.pred.c[i,t+1] <- diff.pred.c
-    
+      NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  out1$sims.list$t.h1[xx]*phiS.h1[i,t] *  NS.h1[i,t]
+      NS.h1[i,t+1] <- (1 - out1$sims.list$t.h1[xx])*phiS.h1[i,t] *  NS.h1[i,t] + G.h1[i,t]
+      
+      nA.hal1[i,t+1] = rpois(1,NA.h1[i,t+1])
+      nS.hal1[i,t+1] = rpois(1,NS.h1[i,t+1])
+      
+      
+      
+      # Halimium commutatum
+      
+      phiA.h2[i,t] <- 1/(1+exp(-( out1$sims.list$a0.h2[xx] + out1$sims.list$a2.h2[xx] * log(NA.h2[i,t]+0.001) + out1$sims.list$a3.h2[xx] * neigh.h2[i,t] )))
+      phiS.h2[i,t] <- 1/(1+exp(-( out1$sims.list$b0.h2[xx] +  out1$sims.list$b2.h2[xx] * log(NA.h2[i,t]+0.001)+ out1$sims.list$b3.h2[xx] * neigh.h2[i,t])))
+      
+      G.h2[i,t] = rpois(1,out1$sims.list$gamma.h2[xx])
+      
+      NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  out1$sims.list$t.h2[xx]*phiS.h2[i,t] *  NS.h2[i,t]
+      NS.h2[i,t+1] <- (1 - out1$sims.list$t.h2[xx])*phiS.h2[i,t] *  NS.h2[i,t] + G.h2[i,t]
+      
+      nA.hal2[i,t+1] = rpois(1,NA.h2[i,t+1])
+      nS.hal2[i,t+1] = rpois(1,NS.h2[i,t+1])
+      
+      
+      # Lavandula stoechas 
+      
+      phiA.l[i,t] <- 1/(1+exp(-( out1$sims.list$a0.l[xx] + out1$sims.list$a3.l[xx] * neigh.l[i,t]  )))
+      phiS.l[i,t] <- 1/(1+exp(-( out1$sims.list$b0.l[xx] + out1$sims.list$b2.l[xx] * log(NA.l[i,t]+0.001) + out1$sims.list$b3.l[xx] * neigh.l[i,t])))
+      
+      G.l[i,t] = rpois(1,out1$sims.list$gamma.l[xx])
+      
+      NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  out1$sims.list$t.l[xx]*phiS.l[i,t] *  NS.l[i,t]
+      NS.l[i,t+1] <- (1 - out1$sims.list$t.l[xx])*phiS.l[i,t] *  NS.l[i,t] + G.l[i,t]
+      
+      nA.lav[i,t+1] = rpois(1,NA.l[i,t+1])
+      nS.lav[i,t+1] = rpois(1,NS.l[i,t+1])
+      
+      ## Rosmarinus officinalis
+      
+      phiA.r[i,t] <- 1/(1+exp(-( out1$sims.list$a0.r[xx] + out1$sims.list$a2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$a3.r[xx] * neigh.r[i,t])))
+      phiS.r[i,t] <- 1/(1+exp(-( out1$sims.list$b0.r[xx] + out1$sims.list$b2.r[xx] * log(NA.r[i,t]+0.001) + out1$sims.list$b3.r[xx] * neigh.r[i,t])))
+      
+      G.r[i,t] = rpois(1,out1$sims.list$gamma.r[xx])
+      
+      NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] + out1$sims.list$t.r[xx]* phiS.r[i,t] *  NS.r[i,t]
+      NS.r[i,t+1] <- (1 - out1$sims.list$t.r[xx])*phiS.r[i,t] *  NS.r[i,t] + G.r[i,t]
+      
+      nA.ros[i,t+1] = rpois(1,NA.r[i,t+1])
+      nS.ros[i,t+1] = rpois(1,NS.r[i,t+1])
+      
+      ## Cistus libanotis 
+      
+      phiA.c[i,t] <- 1/(1+exp(-( out1$sims.list$a0.c[xx] + out1$sims.list$a1.c[xx] *rain[t] + out1$sims.list$a2.c[xx] * log(NA.c[i,t]+0.001) + out1$sims.list$a3.c[xx] * neigh.c[i,t])))
+      phiS.c[i,t] <- out1$sims.list$phiS.c[xx]
+      
+      G.c[i,t] = rpois(1,out1$sims.list$gamma.c[xx])
+      
+      NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  out1$sims.list$t.c[xx]*phiS.c[i,t] *  NS.c[i,t]
+      NS.c[i,t+1] <- (1 - out1$sims.list$t.c[xx])*phiS.c[i,t] *  NS.c[i,t] + G.c[i,t]
+      nA.cis[i,t+1] = rpois(1,NA.c[i,t+1])
+      nS.cis[i,t+1] = rpois(1,NS.c[i,t+1])
+      
+      ###   Neighborhood
+      
+      neigh.c[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
+      neigh.h1[i,t+1] <- log(NA.h2[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
+      neigh.h2[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
+      neigh.l[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
+      neigh.r[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.l[i,t+1]+NA.h2[i,t+1])
+      
+      
+      # # Goodness of fit ADULTS
+      # Hal 1
+      n.pred.h1 = rpois(1,NA.h1[i,t+1])
+      e1 <- NA.h1[i,t+1]
+      diff= CA.hal1[i,t+1] - e1
+      resid1.h1[i,t+1] <- diff
+      
+      diff.pred.h1 = n.pred.h1 - e1
+      resid1.pred.h1[i,t+1] <- diff.pred.h1
+      
+      # Hal 2
+      n.pred.h2 = rpois(1,NA.h2[i,t+1])
+      e1 <- NA.h2[i,t+1]
+      diff= CA.hal2[i,t+1] - e1
+      resid1.h2[i,t+1] <- diff
+      
+      diff.pred.h2 = n.pred.h2 - e1
+      resid1.pred.h2[i,t+1] <- diff.pred.h2
+      
+      # Lav
+      n.pred.l = rpois(1,NA.l[i,t+1])
+      e1 <- NA.l[i,t+1]
+      diff= CA.lav[i,t+1] - e1
+      resid1.l[i,t+1] <- diff
+      
+      diff.pred.l = n.pred.l - e1
+      resid1.pred.l[i,t+1] <- diff.pred.l
+      
+      # Ros
+      n.pred.r = rpois(1,NA.r[i,t+1])
+      e1 <- NA.r[i,t+1]
+      diff= CA.ros[i,t+1] - e1
+      resid1.r[i,t+1] <- diff
+      
+      diff.pred.r = n.pred.r - e1
+      resid1.pred.r[i,t+1] <- diff.pred.r
+      
+      # Cis
+      n.pred.c = rpois(1,NA.c[i,t+1])
+      e1 <- NA.c[i,t+1]
+      diff= CA.cis[i,t+1] - e1
+      resid1.c[i,t+1] <- diff
+      
+      diff.pred.c = n.pred.c - e1
+      resid1.pred.c[i,t+1] <- diff.pred.c
+      
+      # # Goodness of fit SAPLINGS
+      
+      # Halimium halimifolium
+      n.pred.h1 = rpois(1,NS.h1[i,t+1])
+      e1 <- NS.h1[i,t+1]
+      diff= CS.hal1[i,t+1] - e1
+      resid1S.h1[i,t+1] <- diff
+      
+      diff.pred.h1 = n.pred.h1 - e1
+      resid1S.pred.h1[i,t+1] <- diff.pred.h1
+      
+      # Halimium commutatum
+      n.pred.h2 = rpois(1,NS.h2[i,t+1])
+      e1 <- NS.h2[i,t+1]
+      diff= CS.hal2[i,t+1] - e1
+      resid1S.h2[i,t+1] <- diff
+      
+      diff.pred.h2 = n.pred.h2 - e1
+      resid1S.pred.h2[i,t+1] <- diff.pred.h2
+      
+      # Lavandula
+      n.pred.l = rpois(1,NS.l[i,t+1])
+      e1 <- NS.l[i,t+1]
+      diff= CS.lav[i,t+1] - e1
+      resid1S.l[i,t+1] <- diff
+      
+      diff.pred.l = n.pred.l - e1
+      resid1S.pred.l[i,t+1] <- diff.pred.l
+      
+      # Rosmarinus
+      n.pred.r = rpois(1,NS.r[i,t+1])
+      e1 <- NS.r[i,t+1]
+      diff= CS.ros[i,t+1] - e1
+      resid1S.r[i,t+1] <- diff
+      
+      diff.pred.r = n.pred.r - e1
+      resid1S.pred.r[i,t+1] <- diff.pred.r
+      
+      # Cistus
+      n.pred.c = rpois(1,NS.c[i,t+1])
+      e1 <- NS.c[i,t+1]
+      diff= CS.cis[i,t+1] - e1
+      resid1S.c[i,t+1] <- diff
+      
+      diff.pred.c = n.pred.c - e1
+      resid1S.pred.c[i,t+1] <- diff.pred.c
+      
     }
-
-    }
-     
-   # ADULTS ( observed data are available for years 2:4,7,11:15; but initial years 2:4 provide a bad fit to the data for adults - user can check this by adding these years)
-        
-        fit1.data.h1[xx] <- sum(resid1.h1[,c(7,11:15)]) 
-        fit1.pred.h1[xx] <- sum(resid1.pred.h1[,c(7,11:15)])
-
-        fit1.data.h2[xx] <- sum(resid1.h2[,c(7,11:15)])
-        fit1.pred.h2[xx] <- sum(resid1.pred.h2[,c(7,11:15)])
-        
-        fit1.data.l[xx] <- sum(resid1.l[,c(7,11:15)])
-        fit1.pred.l[xx] <- sum(resid1.pred.l[,c(7,11:15)])
-        
-        fit1.data.r[xx] <- sum(resid1.r[,c(7,11:15)])
-        fit1.pred.r[xx] <- sum(resid1.pred.r[,c(7,11:15)])
-        
-        fit1.data.c[xx] <- sum(resid1.c[,c(7,11:15)])
-        fit1.pred.c[xx] <- sum(resid1.pred.c[,c(7,11:15)])
-        
-        # SAPLINGS 
-        fit1.dataS.h1[xx] <- sum(resid1S.h1[,c(2:4,7,11:15)]) 
-        fit1.predS.h1[xx] <- sum(resid1S.pred.h1[,c(2:4,7,11:15)])
-        
-        fit1.dataS.h2[xx] <- sum(resid1S.h2[,c(2:4,7,11:15)])
-        fit1.predS.h2[xx] <- sum(resid1S.pred.h2[,c(2:4,7,11:15)])
-        
-        fit1.dataS.l[xx] <- sum(resid1S.l[,c(2:4,7,11:15)])
-        fit1.predS.l[xx] <- sum(resid1S.pred.l[,c(2:4,7,11:15)])
-        
-        fit1.dataS.r[xx] <- sum(resid1S.r[,c(2:4,7,11:15)])
-        fit1.predS.r[xx] <- sum(resid1S.pred.r[,c(2:4,7,11:15)])
-        
-        fit1.dataS.c[xx] <- sum(resid1S.c[,c(2:4,7,11:15)])
-        fit1.predS.c[xx] <- sum(resid1S.pred.c[,c(2:4,7,11:15)])
- }
+    
+  }
+  
+  # ADULTS ( observed data are available for years 2:4,7,11:15)
+  
+  fit1.data.h1[xx] <- sum(resid1.h1[,c(2:4,7,11:15)]) 
+  fit1.pred.h1[xx] <- sum(resid1.pred.h1[,c(2:4,7,11:15)])
+  
+  fit1.data.h2[xx] <- sum(resid1.h2[,c(2:4,7,11:15)])
+  fit1.pred.h2[xx] <- sum(resid1.pred.h2[,c(2:4,7,11:15)])
+  
+  fit1.data.l[xx] <- sum(resid1.l[,c(2:4,7,11:15)])
+  fit1.pred.l[xx] <- sum(resid1.pred.l[,c(2:4,7,11:15)])
+  
+  fit1.data.r[xx] <- sum(resid1.r[,c(2:4,7,11:15)])
+  fit1.pred.r[xx] <- sum(resid1.pred.r[,c(2:4,7,11:15)])
+  
+  fit1.data.c[xx] <- sum(resid1.c[,c(2:4,7,11:15)])
+  fit1.pred.c[xx] <- sum(resid1.pred.c[,c(2:4,7,11:15)])
+  
+  # SAPLINGS 
+  fit1.dataS.h1[xx] <- sum(resid1S.h1[,c(2:4,7,11:15)]) 
+  fit1.predS.h1[xx] <- sum(resid1S.pred.h1[,c(2:4,7,11:15)])
+  
+  fit1.dataS.h2[xx] <- sum(resid1S.h2[,c(2:4,7,11:15)])
+  fit1.predS.h2[xx] <- sum(resid1S.pred.h2[,c(2:4,7,11:15)])
+  
+  fit1.dataS.l[xx] <- sum(resid1S.l[,c(2:4,7,11:15)])
+  fit1.predS.l[xx] <- sum(resid1S.pred.l[,c(2:4,7,11:15)])
+  
+  fit1.dataS.r[xx] <- sum(resid1S.r[,c(2:4,7,11:15)])
+  fit1.predS.r[xx] <- sum(resid1S.pred.r[,c(2:4,7,11:15)])
+  
+  fit1.dataS.c[xx] <- sum(resid1S.c[,c(2:4,7,11:15)])
+  fit1.predS.c[xx] <- sum(resid1S.pred.c[,c(2:4,7,11:15)])
+}
 
 
 ### ADULTS

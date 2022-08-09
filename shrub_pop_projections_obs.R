@@ -102,8 +102,7 @@ rec.h2=rec.mod
 
 survSap.h2 <- function(rain,ad,neigh){
   
-  mu=inv.logit(out1$mean$b0.h2 +out1$mean$b1.h2*rain
-                 + out1$mean$b2.h2*ad + out1$mean$b3.h2*neigh)
+  mu=inv.logit(out1$mean$b0.h2 + out1$mean$b2.h2*ad + out1$mean$b3.h2*neigh)
 
   return(mu)
 }
@@ -168,13 +167,7 @@ load("Cistus_rec.Rdata")
 rec.c=rec.mod
 
 
-survSap.c <- function(rain,ad){
-  
-  mu=inv.logit(out1$mean$b0.c + out1$mean$b1.c*rain + out1$mean$b2.c*ad)
- 
-  
-  return(mu)
-}
+survSap.c <- out1$mean$phiS.c
 
 ####### METAPOPULATION MODEL
 
@@ -327,7 +320,7 @@ for(i in 1:years){
       if(survS.h1>1) survS.h1 <- 1
       
       mat.h1 = matrix(c(0,survS.h1,0,
-                        0,1-survSap.h1(rain=rain.t,ad=ad.h1[j]),survSap.h1(rain=rain.t,ad=ad.h1[j]),
+                        0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1[j]),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1[j]),
                         rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1[j])),n.stage,n.stage)
       
       survS.h2 = out1$mean$gamma.h2/seed.h2
@@ -337,7 +330,7 @@ for(i in 1:years){
       
     
       mat.h2 = matrix(c(0,survS.h2,0,
-                        0,1-survSap.h2(rain=rain.t,ad=ad.h2[j],neigh=neigh.h2[j]),survSap.h2(rain=rain.t,ad=ad.h2[j],neigh=neigh.h2[j]),
+                        0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2[j],neigh=neigh.h2[j]),out1$mean$t.h2*survSap.h2(ad=ad.h2[j],neigh=neigh.h2[j]),
                         rec.h2,0,survM.h2(ad=ad.h2[j],neigh=neigh.h2[j])),n.stage,n.stage)
       
       survS.l = out1$mean$gamma.l/seed.l
@@ -346,9 +339,8 @@ for(i in 1:years){
       if(survS.l>1) survS.l <- 1
       
       mat.l = matrix(c(0,survS.l,0,
-                       0,1-survSap.l(ad=ad.l[j],neigh=neigh.l[j]),survSap.l(ad=ad.l[j],neigh=neigh.l[j]),
+                       0,(1-out1$mean$t.l)*survSap.l(ad=ad.l[j],neigh=neigh.l[j]),out1$mean$t.l*survSap.l(ad=ad.l[j],neigh=neigh.l[j]),
                        rec.l,0,survM.l(neigh=neigh.l[j])),n.stage,n.stage)
-      
       
       survS.r = 0.35/seed.r
       
@@ -356,7 +348,7 @@ for(i in 1:years){
       if(survS.r>1) survS.r <- 1
       
       mat.r = matrix(c(0,survS.r,0,
-                       0,1-survSap.r(ad=ad.r[j],neigh=neigh.r[j]),survSap.r(ad=ad.r[j],neigh=neigh.r[j]),
+                       0,(1-out1$mean$t.r)*survSap.r(ad=ad.r[j],neigh=neigh.r[j]),out1$mean$t.r*survSap.r(ad=ad.r[j],neigh=neigh.r[j]),
                        rec.r,0,survM.r(ad=ad.r[j],neigh=neigh.r[j])),n.stage,n.stage)
       
       
@@ -366,7 +358,7 @@ for(i in 1:years){
       if(survS.c>1) survS.c <- 1
       
       mat.c = matrix(c(0,survS.c,0,
-                       0,1-survSap.c(rain=rain.t,ad=ad.c[j]),survSap.c(rain=rain.t,ad=ad.c[j]),
+                       0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
                        rec.c,0,survM.c(rain=rain.t,ad=ad.c[j],neigh=neigh.c[j])),n.stage,n.stage)
       
       if(j==1){

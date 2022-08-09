@@ -63,10 +63,9 @@ load("Hal2_rec.Rdata")
 rec.h2=rec.mod
 
 
-survSap.h2 <- function(rain,ad,neigh){
+survSap.h2 <- function(ad,neigh){
   
- mu=inv.logit(out1$mean$b0.h2 +out1$mean$b1.h2*rain
-                 + out1$mean$b2.h2*ad + out1$mean$b3.h2*neigh)
+ mu=inv.logit(out1$mean$b0.h2 + out1$mean$b2.h2*ad + out1$mean$b3.h2*neigh)
  
   return(mu)
 }
@@ -130,12 +129,7 @@ load("Cistus_rec.Rdata")
 rec.c=rec.mod
 
 
-survSap.c <- function(rain,ad){
-  
-  mu=inv.logit(out1$mean$b0.c + out1$mean$b1.c*rain + out1$mean$b2.c*ad)
-  
-  return(mu)
-}
+survSap.c <- out1$mean$phiS.c
 
 
 ####### LAMBDA
@@ -171,73 +165,73 @@ for(s in 1:nrow(coefs)){
     if(survS.h1>1) survS.h1 <- 1
     
     mat.h1 = matrix(c(0,survS.h1,0,
-                      0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1),
+                      0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1),
                       rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
     
-     l.h1[s] =lambda(mat.h1)
-     
-     # Hal 2 
-     survS.h2 = out1$mean$gamma.h2/seed.t
-     
-     if(!is.finite(survS.h2)) survS.h2 <- 0
-     if(survS.h2>1) survS.h2 <- 1
-     
-     
-     mat.h2 = matrix(c(0,survS.h2,0,
-                       0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),
-                       rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
-     
-     
-      l.h2[s] =lambda(mat.h2)
-      
-      # Lav
-      
-      survS.l = out1$mean$gamma.l/seed.t
-      
-      if(!is.finite(survS.l)) survS.l <- 0
-      if(survS.l>1) survS.l <- 1
-      
-      mat.l = matrix(c(0,survS.l,0,
-                       0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l,neigh=neigh.l),
-                       rec.l,0,survM.l(neigh=neigh.l)),n.stage,n.stage)
-      
-      
-      l.l[s] =lambda(mat.l)
-      
-      # Ros 
-      
-      survS.r = 0.3/seed.t
-      
-      if(!is.finite(survS.r)) survS.r <- 0
-      if(survS.r>1) survS.r <- 1
-      
-      mat.r = matrix(c(0,survS.r,0,
-                       0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r),
-                       rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
-      
-      
-      l.r[s] =lambda(mat.r)
-      
-      # Cistus 
-      
-      survS.c = out1$mean$gamma.c/seed.t
-      
-      if(!is.finite(survS.c)) survS.c <- 0
-      if(survS.c>1) survS.c <- 1
-      
-      mat.c = matrix(c(0,survS.c,0,
-                       0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
-                       rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
-      
-      
-      l.c[s] =lambda(mat.c)
-     
+    l.h1[s] =lambda(mat.h1)
+    
+    # Hal 2 
+    survS.h2 = out1$mean$gamma.h2/seed.t
+    
+    if(!is.finite(survS.h2)) survS.h2 <- 0
+    if(survS.h2>1) survS.h2 <- 1
+    
+    
+    mat.h2 = matrix(c(0,survS.h2,0,
+                      0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2),
+                      rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
+    
+    
+    l.h2[s] =lambda(mat.h2)
+    
+    # Lav
+    
+    survS.l = out1$mean$gamma.l/seed.t
+    
+    if(!is.finite(survS.l)) survS.l <- 0
+    if(survS.l>1) survS.l <- 1
+    
+    mat.l = matrix(c(0,survS.l,0,
+                     0,(1-out1$mean$t.l)*survSap.l(ad=ad.l,neigh=neigh.l),out1$mean$t.l*survSap.l(ad=ad.l,neigh=neigh.l),
+                     rec.l,0,survM.l(neigh=neigh.l)),n.stage,n.stage)
+    
+    
+    l.l[s] =lambda(mat.l)
+    
+    # Ros 
+    
+    survS.r = 0.3/seed.t
+    
+    if(!is.finite(survS.r)) survS.r <- 0
+    if(survS.r>1) survS.r <- 1
+    
+    mat.r = matrix(c(0,survS.r,0,
+                     0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r),
+                     rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
+    
+    
+    l.r[s] =lambda(mat.r)
+    
+    # Cistus 
+    
+    survS.c = out1$mean$gamma.c/seed.t
+    
+    if(!is.finite(survS.c)) survS.c <- 0
+    if(survS.c>1) survS.c <- 1
+    
+    mat.c = matrix(c(0,survS.c,0,
+                     0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
+                     rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
+    
+    
+    l.c[s] =lambda(mat.c)
+    
   
 }
 
 stable.h1=sample(which(l.h1>0.999&l.h1<1.001),100)
 stable.h2=sample(which(l.h2>0.999&l.h2<1.001),100)
-stable.l=sample(which(l.l>0.997&l.l<1.007),100)
+stable.l=sample(which(l.l>0.999&l.l<1.001),100)
 stable.r=sample(which(l.r>0.999&l.r<1.001),100)
 stable.c=sample(which(l.c>0.999&l.c<1.001),100)
 
@@ -262,19 +256,19 @@ for(s in 1:length(stable.h1)){
   if(survS.h1>1) survS.h1 <- 1
   
   control = matrix(c(0,survS.h1,0,
-                    0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1),
-                    rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
+                     0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1),
+                     rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
   
   pert1=matrix(c(0,survS.h1,0,
-                 0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t.pert,ad=ad.h1),
+                 0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t.pert,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t.pert,ad=ad.h1),
                  rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
   
   pert2 = matrix(c(0,survS.h1,0,
-                     0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1),
-                     rec.h1,0,survM.h1(rain=rain.t.pert,neigh=neigh.h1)),n.stage,n.stage)
+                   0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1),
+                   rec.h1,0,survM.h1(rain=rain.t.pert,neigh=neigh.h1)),n.stage,n.stage)
   
   pert3 = matrix(c(0,survS.h1,0,
-                   0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t.pert,ad=ad.h1),
+                   0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t.pert,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t.pert,ad=ad.h1),
                    rec.h1,0,survM.h1(rain=rain.t.pert,neigh=neigh.h1)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
@@ -291,34 +285,8 @@ dl.h2=NULL
 
 for(s in 1:length(stable.h2)){
   
-  rain.t=coefs$rain[stable.h2[s]]
-  rain.t.pert=coefs$rain[stable.h2[s]]+0.1*abs(coefs$rain[stable.h2[s]])
-  
-  seed.t=coefs$seed[stable.h2[s]]
-  
-  neigh.h2=coefs$neigh[stable.h2[s]]
-
-  ad.h2=coefs$ad[stable.h2[s]]
-  
-  survS.h2 = out1$mean$gamma.h2/seed.t
-  
-  if(!is.finite(survS.h2)) survS.h2 <- 0
-  if(survS.h2>1) survS.h2 <- 1
-  
-  
- control = matrix(c(0,survS.h2,0,
-                    0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),
-                    rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
-  
-
-  pert1=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t.pert,ad=ad.h2,neigh=neigh.h2),
-                 rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
-  
-  
-  
   temp = data.frame(vr=c("survS","survM","survS/M"),
-                    delta=c((lambda(pert1)-lambda(control))/lambda(control),NA,NA))
+                    delta=c(NA,NA,NA))
   
   dl.h2=rbind(dl.h2,temp)
 }
@@ -368,26 +336,18 @@ for(s in 1:length(stable.c)){
   if(survS.c>1) survS.c <- 1
   
   control = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
-                   rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
+                     0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
+                     rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
   
-  pert1 = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t.pert,ad=ad.c),
-                   rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
   
   pert2 = matrix(c(0,survS.c,0,
-                     0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
-                     rec.c,0,survM.c(rain=rain.t.pert,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
-  
-  pert3 = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t.pert,ad=ad.c),
+                   0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
                    rec.c,0,survM.c(rain=rain.t.pert,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
-                    delta=c((lambda(pert1)-lambda(control))/lambda(control),
+                    delta=c(NA,
                             (lambda(pert2)-lambda(control))/lambda(control),
-                            (lambda(pert3)-lambda(control))/lambda(control)))
-  
+                            NA))
   dl.c=rbind(dl.c,temp)
 }
 
@@ -419,11 +379,11 @@ for(s in 1:length(stable.h1)){
   if(survS.h1>1) survS.h1 <- 1
   
   control = matrix(c(0,survS.h1,0,
-                     0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1),
+                     0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1),
                      rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
   
   pert1=matrix(c(0,survS.h1,0,
-                 0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1.pert),
+                 0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1.pert),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1.pert),
                  rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
@@ -455,20 +415,19 @@ for(s in 1:length(stable.h2)){
   
   
   control = matrix(c(0,survS.h2,0,
-                     0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),
+                     0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2),
                      rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
   
-  
   pert1=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2.pert,neigh=neigh.h2),
+                 0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2.pert,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2.pert,neigh=neigh.h2),
                  rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
   
   pert2=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),
+                 0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2),
                  rec.h2,0,survM.h2(ad=ad.h2.pert,neigh=neigh.h2)),n.stage,n.stage)
   
   pert3=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2.pert,neigh=neigh.h2),
+                 0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2.pert,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2.pert,neigh=neigh.h2),
                  rec.h2,0,survM.h2(ad=ad.h2.pert,neigh=neigh.h2)),n.stage,n.stage)
   
   
@@ -476,7 +435,6 @@ for(s in 1:length(stable.h2)){
                     delta=c((lambda(pert1)-lambda(control))/lambda(control),
                             (lambda(pert2)-lambda(control))/lambda(control),
                             (lambda(pert3)-lambda(control))/lambda(control)))
-  
   dl.h2=rbind(dl.h2,temp)
 }
 
@@ -502,12 +460,12 @@ for(s in 1:length(stable.l)){
   if(survS.l>1) survS.l <- 1
   
   control = matrix(c(0,survS.l,0,
-                     0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l,neigh=neigh.l),
+                     0,(1-out1$mean$t.l)*survSap.l(ad=ad.l,neigh=neigh.l),out1$mean$t.l*survSap.l(ad=ad.l,neigh=neigh.l),
                      rec.l,0,survM.l(neigh=neigh.l)),n.stage,n.stage)
   
   
   pert1 = matrix(c(0,survS.l,0,
-                   0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l.pert,neigh=neigh.l),
+                   0,(1-out1$mean$t.l)*survSap.l(ad=ad.l.pert,neigh=neigh.l),out1$mean$t.l*survSap.l(ad=ad.l.pert,neigh=neigh.l),
                    rec.l,0,survM.l(neigh=neigh.l)),n.stage,n.stage)
   
   
@@ -538,21 +496,21 @@ for(s in 1:length(stable.r)){
   if(!is.finite(survS.r)) survS.r <- 0
   if(survS.r>1) survS.r <- 1
   
-  control = matrix(c(0,survS.r,0,
-                     0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r),
-                     rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
+  control =  matrix(c(0,survS.r,0,
+                      0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r),
+                      rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
   
-  pert1 = matrix(c(0,survS.r,0,
-                   0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r.pert,neigh=neigh.r),
-                   rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
+  pert1 =  matrix(c(0,survS.r,0,
+                    0,(1-out1$mean$t.r)*survSap.r(ad=ad.r.pert,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r.pert,neigh=neigh.r),
+                    rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
   
-  pert2 = matrix(c(0,survS.r,0,
-                   0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r),
-                   rec.r,0,survM.r(ad=ad.r.pert,neigh=neigh.r)),n.stage,n.stage)
+  pert2 =  matrix(c(0,survS.r,0,
+                    0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r),
+                    rec.r,0,survM.r(ad=ad.r.pert,neigh=neigh.r)),n.stage,n.stage)
   
-  pert3 = matrix(c(0,survS.r,0,
-                   0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r.pert,neigh=neigh.r),
-                   rec.r,0,survM.r(ad=ad.r.pert,neigh=neigh.r)),n.stage,n.stage)
+  pert3 =  matrix(c(0,survS.r,0,
+                    0,(1-out1$mean$t.r)*survSap.r(ad=ad.r.pert,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r.pert,neigh=neigh.r),
+                    rec.r,0,survM.r(ad=ad.r.pert,neigh=neigh.r)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
                     delta=c((lambda(pert1)-lambda(control))/lambda(control),
@@ -584,26 +542,19 @@ for(s in 1:length(stable.c)){
   if(survS.c>1) survS.c <- 1
   
   control = matrix(c(0,survS.c,0,
-                     0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
+                     0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
                      rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
   
-  pert1 = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c.pert),
-                   rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
   
   pert2 = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
-                   rec.c,0,survM.c(rain=rain.t,ad=ad.c.pert,neigh=neigh.c)),n.stage,n.stage)
-  
-  pert3 = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c.pert),
+                   0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
                    rec.c,0,survM.c(rain=rain.t,ad=ad.c.pert,neigh=neigh.c)),n.stage,n.stage)
   
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
-                    delta=c((lambda(pert1)-lambda(control))/lambda(control),
+                    delta=c(NA,
                             (lambda(pert2)-lambda(control))/lambda(control),
-                            (lambda(pert3)-lambda(control))/lambda(control)))
+                            NA))
   
   dl.c=rbind(dl.c,temp)
 }
@@ -637,11 +588,11 @@ for(s in 1:length(stable.h1)){
   if(survS.h1>1) survS.h1 <- 1
   
   control = matrix(c(0,survS.h1,0,
-                     0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1),
+                     0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1),
                      rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1)),n.stage,n.stage)
   
   pert2=matrix(c(0,survS.h1,0,
-                 0,1-survSap.h1(rain=rain.t,ad=ad.h1),survSap.h1(rain=rain.t,ad=ad.h1),
+                 0,(1-out1$mean$t.h1)*survSap.h1(rain=rain.t,ad=ad.h1),out1$mean$t.h1*survSap.h1(rain=rain.t,ad=ad.h1),
                  rec.h1,0,survM.h1(rain=rain.t,neigh=neigh.h1.pert)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
@@ -672,22 +623,21 @@ for(s in 1:length(stable.h2)){
   
   
   control = matrix(c(0,survS.h2,0,
-                     0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),
+                     0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2),
                      rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
   
   
   pert1=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2.pert),
+                 0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2.pert),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2.pert),
                  rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2)),n.stage,n.stage)
   
   pert2=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),
+                 0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2),
                  rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2.pert)),n.stage,n.stage)
   
   pert3=matrix(c(0,survS.h2,0,
-                 0,1-survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2),survSap.h2(rain=rain.t,ad=ad.h2,neigh=neigh.h2.pert),
+                 0,(1-out1$mean$t.h2)*survSap.h2(ad=ad.h2,neigh=neigh.h2.pert),out1$mean$t.h2*survSap.h2(ad=ad.h2,neigh=neigh.h2.pert),
                  rec.h2,0,survM.h2(ad=ad.h2,neigh=neigh.h2.pert)),n.stage,n.stage)
-  
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
                     delta=c((lambda(pert1)-lambda(control))/lambda(control),
@@ -719,20 +669,20 @@ for(s in 1:length(stable.l)){
   if(survS.l>1) survS.l <- 1
   
   control = matrix(c(0,survS.l,0,
-                     0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l,neigh=neigh.l),
+                     0,(1-out1$mean$t.l)*survSap.l(ad=ad.l,neigh=neigh.l),out1$mean$t.l*survSap.l(ad=ad.l,neigh=neigh.l),
                      rec.l,0,survM.l(neigh=neigh.l)),n.stage,n.stage)
   
   
   pert1 = matrix(c(0,survS.l,0,
-                   0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l,neigh=neigh.l.pert),
+                   0,(1-out1$mean$t.l)*survSap.l(ad=ad.l,neigh=neigh.l.pert),out1$mean$t.l*survSap.l(ad=ad.l,neigh=neigh.l.pert),
                    rec.l,0,survM.l(neigh=neigh.l)),n.stage,n.stage)
   
   pert2 = matrix(c(0,survS.l,0,
-                   0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l,neigh=neigh.l),
+                   0,(1-out1$mean$t.l)*survSap.l(ad=ad.l,neigh=neigh.l),out1$mean$t.l*survSap.l(ad=ad.l,neigh=neigh.l),
                    rec.l,0,survM.l(neigh=neigh.l.pert)),n.stage,n.stage)
   
   pert3 = matrix(c(0,survS.l,0,
-                   0,1-survSap.l(ad=ad.l,neigh=neigh.l),survSap.l(ad=ad.l,neigh=neigh.l.pert),
+                   0,(1-out1$mean$t.l)*survSap.l(ad=ad.l,neigh=neigh.l.pert),out1$mean$t.l*survSap.l(ad=ad.l,neigh=neigh.l.pert),
                    rec.l,0,survM.l(neigh=neigh.l.pert)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
@@ -764,19 +714,22 @@ for(s in 1:length(stable.r)){
   if(survS.r>1) survS.r <- 1
   
   control = matrix(c(0,survS.r,0,
-                     0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r),
+                     0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r),
                      rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
   
+  
   pert1 = matrix(c(0,survS.r,0,
-                   0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r.pert),
+                   0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r.pert),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r.pert),
                    rec.r,0,survM.r(ad=ad.r,neigh=neigh.r)),n.stage,n.stage)
   
+  
   pert2 = matrix(c(0,survS.r,0,
-                   0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r),
+                   0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r),
                    rec.r,0,survM.r(ad=ad.r,neigh=neigh.r.pert)),n.stage,n.stage)
   
+  
   pert3 = matrix(c(0,survS.r,0,
-                   0,1-survSap.r(ad=ad.r,neigh=neigh.r),survSap.r(ad=ad.r,neigh=neigh.r.pert),
+                   0,(1-out1$mean$t.r)*survSap.r(ad=ad.r,neigh=neigh.r.pert),out1$mean$t.r*survSap.r(ad=ad.r,neigh=neigh.r.pert),
                    rec.r,0,survM.r(ad=ad.r,neigh=neigh.r.pert)),n.stage,n.stage)
   
   temp = data.frame(vr=c("survS","survM","survS/M"),
@@ -807,11 +760,11 @@ for(s in 1:length(stable.c)){
   if(survS.c>1) survS.c <- 1
   
   control = matrix(c(0,survS.c,0,
-                     0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
+                     0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
                      rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c)),n.stage,n.stage)
   
   pert2 = matrix(c(0,survS.c,0,
-                   0,1-survSap.c(rain=rain.t,ad=ad.c),survSap.c(rain=rain.t,ad=ad.c),
+                   0,(1-out1$mean$t.c)*survSap.c,out1$mean$t.c*survSap.c,
                    rec.c,0,survM.c(rain=rain.t,ad=ad.c,neigh=neigh.c.pert)),n.stage,n.stage)
   
   

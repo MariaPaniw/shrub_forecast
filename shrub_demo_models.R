@@ -508,6 +508,8 @@ cat(file = "allShrubs.txt","
 
     b0.h1 ~ dnorm( 0 , 1.0E-05 )
     b2.h1 ~ dnorm( 0 , 1.0E-05 )
+    
+    t.h1~ dunif(0,1)
 
     a0.h2 ~ dnorm( 0 , 1.0E-05 )
     a2.h2 ~ dnorm( 0 , 1.0E-05 )
@@ -516,40 +518,41 @@ cat(file = "allShrubs.txt","
 
 
     b0.h2 ~ dnorm( 0 , 1.0E-05 )
-    b1.h2 ~ dnorm( 0 , 1.0E-05 )
     b2.h2 ~ dnorm( 0 , 1.0E-05 )
     b3.h2 ~ dnorm( 0 , 1.0E-05 )
+    
+    t.h2~ dunif(0,1)
 
     a0.l ~ dnorm( 0 , 1.0E-05 )
     a3.l ~ dnorm( 0 , 1.0E-05 )
     
 
-
     b0.l ~ dnorm( 0 , 1.0E-05 )
     b2.l ~ dnorm( 0 , 1.0E-05 )
     b3.l ~ dnorm( 0 , 1.0E-05 )
     
+    t.l~ dunif(0,1)
+     
     a0.r ~ dnorm( 0 , 1.0E-05 ) 
     a2.r ~ dnorm( 0 , 1.0E-05 )
     a3.r ~ dnorm( 0 , 1.0E-05 )
     
-
-
     b0.r ~ dnorm( 0 , 1.0E-05 )
     b2.r ~ dnorm( 0 , 1.0E-05 )
     b3.r ~ dnorm( 0 , 1.0E-05 )
 
+    t.r~ dunif(0,1)
+    
     a0.c ~ dnorm( 0 , 1.0E-05 )
     a1.c ~ dnorm( 0 , 1.0E-05 ) 
     a2.c ~ dnorm( 0 , 1.0E-05 )
     a3.c ~ dnorm( 0 , 1.0E-05 )
     
+    phiS.c ~ dunif(0,1)
 
+    t.c~ dunif(0,1)
 
-    b0.c ~ dnorm( 0 , 1.0E-05 )
-    b1.c ~ dnorm( 0 , 1.0E-05 )
-    b2.c ~ dnorm( 0 , 1.0E-05 )
-
+    
     # Recruitment
     gamma.h1 ~ dunif(0, 10) 
     gamma.h2 ~ dunif(0, 10) 
@@ -595,8 +598,8 @@ cat(file = "allShrubs.txt","
     
     G.h1[i,t] ~ dpois(gamma.h1)
     
-    NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  phiS.h1[i,t] *  NS.h1[i,t]
-    NS.h1[i,t+1] <- (1 - phiS.h1[i,t] ) *  NS.h1[i,t] + G.h1[i,t]
+    NA.h1[i,t+1] <- phiA.h1[i,t] *  NA.h1[i,t] +  t.h1*phiS.h1[i,t] *  NS.h1[i,t]
+    NS.h1[i,t+1] <- (1 - t.h1)*phiS.h1[i,t] *  NS.h1[i,t] + G.h1[i,t]
 
     
  # Halimium commutatum
@@ -605,12 +608,12 @@ cat(file = "allShrubs.txt","
     nS.hal2[i,t+1] ~ dpois(NS.h2[i,t+1])
     
     phiA.h2[i,t] <- 1/(1+exp(-( a0.h2 + a2.h2 * log(NA.h2[i,t]+0.001) + a3.h2 * neigh.h2[i,t] )))
-    phiS.h2[i,t] <- 1/(1+exp(-( b0.h2 + b1.h2 *rain[t] + b2.h2 * log(NA.h2[i,t]+0.001)+ b3.h2 * neigh.h2[i,t])))
+    phiS.h2[i,t] <- 1/(1+exp(-( b0.h2 + b2.h2 * log(NA.h2[i,t]+0.001)+ b3.h2 * neigh.h2[i,t])))
     
     G.h2[i,t] ~ dpois(gamma.h2)
     
-    NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  phiS.h2[i,t] *  NS.h2[i,t]
-    NS.h2[i,t+1] <- (1 - phiS.h2[i,t] ) *  NS.h2[i,t] + G.h2[i,t]
+    NA.h2[i,t+1] <- phiA.h2[i,t] *  NA.h2[i,t] +  t.h2*phiS.h2[i,t] *  NS.h2[i,t]
+    NS.h2[i,t+1] <- (1 - t.h2) * phiS.h2[i,t] *  NS.h2[i,t] + G.h2[i,t]
 
 
 # Lavandula stoechas 
@@ -623,8 +626,8 @@ cat(file = "allShrubs.txt","
 
     G.l[i,t] ~ dpois(gamma.l)
     
-    NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  phiS.l[i,t] *  NS.l[i,t]
-    NS.l[i,t+1] <- (1 - phiS.l[i,t] ) *  NS.l[i,t] + G.l[i,t]
+    NA.l[i,t+1] <- phiA.l[i,t] *  NA.l[i,t] +  t.l*phiS.l[i,t] *  NS.l[i,t]
+    NS.l[i,t+1] <- (1 - t.l)*phiS.l[i,t] *  NS.l[i,t] + G.l[i,t]
 
      
 ## Rosmarinus officinalis
@@ -637,8 +640,8 @@ cat(file = "allShrubs.txt","
     
     G.r[i,t] ~ dpois(gamma.r)
     
-    NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] +  phiS.r[i,t] *  NS.r[i,t]
-    NS.r[i,t+1] <- (1 - phiS.r[i,t] ) *  NS.r[i,t] + G.r[i,t]
+    NA.r[i,t+1] <- phiA.r[i,t] *  NA.r[i,t] +  t.r*phiS.r[i,t] *  NS.r[i,t]
+    NS.r[i,t+1] <- (1 - t.r)*phiS.r[i,t] *  NS.r[i,t] + G.r[i,t]
 
 ## Cistus libanotis 
 
@@ -646,14 +649,12 @@ cat(file = "allShrubs.txt","
     nS.cis[i,t+1] ~ dpois(NS.c[i,t+1])
     
     phiA.c[i,t] <- 1/(1+exp(-( a0.c + a1.c *rain[t] + a2.c * log(NA.c[i,t]+0.001) + a3.c * neigh.c[i,t])))
-    phiS.c[i,t] <- 1/(1+exp(-( b0.c + b1.c *rain[t] + b2.c * log(NA.c[i,t]+0.001) )))
-    
+
     G.c[i,t] ~ dpois(gamma.c)
     
-    NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  phiS.c[i,t] *  NS.c[i,t]
-    NS.c[i,t+1] <- (1 - phiS.c[i,t] ) *  NS.c[i,t] + G.c[i,t]
+    NA.c[i,t+1] <- phiA.c[i,t] *  NA.c[i,t] +  t.c*phiS.c *  NS.c[i,t]
+    NS.c[i,t+1] <- (1 - t.c)*phiS.c *  NS.c[i,t] + G.c[i,t]
 
-    
 ###   Neighborhood
 
     neigh.c[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
@@ -698,7 +699,6 @@ inits <- function(){list(a0.h1=rnorm(1,0,0.01),
                          a2.h2=rnorm(1,0,0.01),
                          a3.h2=rnorm(1,0,0.01),
                          b0.h2=rnorm(1,0,0.01),
-                         b1.h2=rnorm(1,0,0.01),
                          b2.h2=rnorm(1,0,0.01),
                          b3.h2=rnorm(1,0,0.01),
                          gamma.h2=1,
@@ -719,10 +719,13 @@ inits <- function(){list(a0.h1=rnorm(1,0,0.01),
                          a1.c=rnorm(1,0,0.01),
                          a2.c=rnorm(1,0,0.01),
                          a3.c=rnorm(1,0,0.01),
-                         b0.c=rnorm(1,0,0.01),
-                         b1.c=rnorm(1,0,0.01),
-                         b2.c=rnorm(1,0,0.01),
-                         gamma.c=1)}
+                         phiS.c = 0.7,
+                         gamma.c=1,
+                         t.h1=runif(1,0.1,0.3),
+                         t.h2=runif(1,0.1,0.3),
+                         t.l=runif(1,0.05,0.2),
+                         t.r=runif(1,0.1,0.3),
+                         t.c=runif(1,0.2,0.4))}
 
 params <- c( "a0.h1",
              "a1.h1",
@@ -735,7 +738,6 @@ params <- c( "a0.h1",
              "a0.h2",
              "a2.h2",
              "b0.h2",
-             "b1.h2",
              "b2.h2",
              "a3.h2",
              "b3.h2",
@@ -762,13 +764,15 @@ params <- c( "a0.h1",
              "a0.c",
              "a1.c",
              "a2.c",
-             "b0.c",
-             "b1.c",
-             "b2.c",
-             "a3.c",
+             "phiS.c",
              "gamma.c",
              "NtotA.c",
-             "NtotS.c")
+             "NtotS.c",
+             "t.h1",
+             "t.h2",
+             "t.l",
+             "t.r",
+             "t.c")
 
 library(jagsUI)
 

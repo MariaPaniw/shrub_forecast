@@ -34,7 +34,6 @@ names=c( "a0.h1",
          "a0.h2",
          "a2.h2",
          "b0.h2",
-         "b1.h2",
          "b2.h2",
          "a3.h2",
          "b3.h2",
@@ -55,11 +54,13 @@ names=c( "a0.h1",
          "a0.c",
          "a1.c",
          "a2.c",
-         "b0.c",
-         "b1.c",
-         "b2.c",
-         "a3.c",
-         "gamma.c")
+         "gamma.c",
+         "phiS.c",
+         "t.h1",
+         "t.h2",
+         "t.l",
+         "t.r",
+         "t.c")
 
 param=NULL
 
@@ -189,7 +190,7 @@ survS=ggplot(data=pred,aes(ad,pred,group=pu))+
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=1)))+
   geom_line(data=mu.pred,aes(ad,pred),size=1,alpha=1,col="black")+
   xlab("Log(# adult intraspecific)")+
-  ylab("Sapling survival/transition")+
+  ylab("Sapling survival")+
   theme_bw(base_size=20)+
   theme(panel.grid = element_blank())+
   theme(legend.title = element_text(size=20),
@@ -274,22 +275,18 @@ survA=ggplot(data=pred,aes(ad,pred,group=pu,col=neigh))+
 
 survA
 
-ad=c(0,2,5)
+ad=seq(0,5,length.out = 15)
 neigh=c(0,2,5)
-
-new=expand.grid(ad,neigh)
 
 pred=NULL
 
 for(i in 1:length(pu.sam)){
   
-  for(j in 1:nrow(new)){
+  for(j in 1:length(neigh)){
     
-    temp=data.frame(pred=inv.logit(out1$sims.list$b0.h2[pu.sam[i]] + out1$sims.list$b1.h2[pu.sam[i]]*rain
-                                   + out1$sims.list$b2.h2[pu.sam[i]]*new$Var1[j] + out1$sims.list$b3.h2[pu.sam[i]]*new$Var2[j]),
-                    rain=rain,
-                    ad=new$Var1[j],
-                    neigh=new$Var2[j])
+    temp=data.frame(pred=inv.logit(out1$sims.list$b0.h2[pu.sam[i]] + out1$sims.list$b2.h2[pu.sam[i]]*ad + out1$sims.list$b3.h2[pu.sam[i]]*neigh[j]),
+                    ad=ad,
+                    neigh=neigh[j])
     
     temp$pu=i
     
@@ -298,17 +295,16 @@ for(i in 1:length(pu.sam)){
   
 }
 
-pred$pu=factor(pred$pu)
+pred$pu=paste(pred$pu,pred$neigh)
 
 mu.pred=NULL
 
-for(j in 1:nrow(new)){
+for(j in 1:length(neigh)){
   
-  temp=data.frame(pred=inv.logit(out1$mean$b0.h2 +out1$mean$b1.h2*rain
-                                 + out1$mean$b2.h2*new$Var1[j] + out1$mean$b3.h2*new$Var2[j]),
-                  rain=rain,
-                  ad=new$Var1[j],
-                  neigh=new$Var2[j])
+  temp=data.frame(pred=inv.logit(out1$mean$b0.h2 + out1$mean$b2.h2*ad + out1$mean$b3.h2*neigh[j]),
+                  # rain=rain,
+                  ad=ad,
+                  neigh=neigh[j])
   
   mu.pred=rbind(mu.pred,temp)
 }
@@ -316,22 +312,19 @@ for(j in 1:nrow(new)){
 
 mu.pred$pu=NA
 
-pred$ad=factor(pred$ad)
+
 pred$neigh=factor(pred$neigh)
 
-mu.pred$ad=factor(mu.pred$ad)
 mu.pred$neigh=factor(mu.pred$neigh)
 
-pred$pu=paste(pred$pu,pred$neigh)
 
-survS=ggplot(data=pred,aes(rain,pred,group=pu,col=neigh))+
+survS=ggplot(data=pred,aes(ad,pred,group=pu,col=neigh))+
   geom_line(size=0.1,alpha=0.3)+
-  scale_color_manual(values=c("black","#ffc425","#f37735"),name="Neighbors")+
   guides(colour = guide_legend(override.aes = list(alpha = 1, size=1)))+
-  geom_line(data=mu.pred,aes(rain,pred,group=neigh),size=1,alpha=1,col="black")+
-  facet_grid(.~ad)+
-  xlab("Rainfall")+
-  ylab("Sapling survival/transition")+
+  scale_color_manual(values=c("black","#ffc425","#f37735"),name="Inter")+
+  geom_line(data=mu.pred,aes(ad,pred,group=neigh,col=neigh),size=1,alpha=1)+
+  xlab("Log(# adult intraspecific)")+
+  ylab("Sapling survival")+
   theme_bw(base_size=20)+
   theme(panel.grid = element_blank())+
   theme(legend.title = element_text(size=20),
@@ -443,7 +436,7 @@ survS=ggplot(data=pred,aes(ad,pred,group=pu,col=neigh))+
   scale_color_manual(values=c("black","#ffc425","#f37735"),name="Inter")+
   geom_line(data=mu.pred,aes(ad,pred,group=neigh,col=neigh),size=1,alpha=1)+
   xlab("Log(# adult intraspecific)")+
-  ylab("Sapling survival/transition")+
+  ylab("Sapling survival")+
   theme_bw(base_size=20)+
   theme(panel.grid = element_blank())+
   theme(legend.title = element_text(size=20),
@@ -571,7 +564,7 @@ survS=ggplot(data=pred,aes(ad,pred,group=pu,col=neigh))+
   scale_color_manual(values=c("black","#ffc425","#f37735"),name="Inter")+
   geom_line(data=mu.pred,aes(ad,pred,group=neigh,col=neigh),size=1,alpha=1)+
   xlab("Log(# adult intraspecific)")+
-  ylab("Sapling survival/transition")+
+  ylab("Sapling survival")+
   theme_bw(base_size=20)+
   theme(panel.grid = element_blank())+
   theme(legend.title = element_text(size=20),
@@ -666,67 +659,3 @@ survA=ggplot(data=pred,aes(rain,pred,group=pu,col=neigh))+
 
 survA 
 
-
-ad=c(0,2,5)
-
-pred=NULL
-
-for(i in 1:length(pu.sam)){
-  
-  for(j in 1:length(ad)){
-    
-    temp=data.frame(pred=inv.logit(out1$sims.list$b0.c[pu.sam[i]] + out1$sims.list$b1.c[pu.sam[i]]*rain + out1$sims.list$b2.c[pu.sam[i]]*ad[j]),
-                    rain=rain,
-                    ad=ad[j])
-    
-    temp$pu=i
-    
-    pred=rbind(pred,temp)
-  }
-  
-}
-
-pred$pu=paste(pred$pu,pred$ad)
-
-mu.pred=NULL
-
-for(j in 1:length(ad)){
-  
-  temp=data.frame(pred=inv.logit(out1$mean$b0.c + out1$mean$b1.c*rain + out1$mean$b2.c*ad[j]),
-                  rain=rain,
-                  ad=ad[j])
-  
-  mu.pred=rbind(mu.pred,temp)
-}
-
-
-mu.pred$pu=NA
-
-pred$ad=factor(pred$ad)
-
-mu.pred$ad=factor(mu.pred$ad)
-
-
-survS=ggplot(data=pred,aes(rain,pred,group=pu,col=ad))+
-  geom_line(size=0.1,alpha=0.3)+
-  guides(colour = guide_legend(override.aes = list(alpha = 1, size=1)))+
-  scale_color_manual(values=c("black","purple","blue"),name="Intra")+
-  geom_line(data=mu.pred,aes(rain,pred,group=ad,col=ad),size=1,alpha=1)+
-  xlab("Raifall")+
-  ylab("Sapling survival/transition")+
-  theme_bw(base_size=20)+
-  theme(panel.grid = element_blank())+
-  theme(legend.title = element_text(size=20),
-        legend.text = element_text(size=20),
-        legend.position = c(0.2,0.7),
-        panel.grid.minor = element_blank(),
-        strip.background = element_blank(),
-        panel.border = element_rect(colour = "black"),
-        axis.text = element_text(colour="black"))
-
-survS
-
-
-x= survA + survS
-
-x
