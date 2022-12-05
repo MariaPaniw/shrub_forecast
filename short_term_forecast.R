@@ -683,7 +683,25 @@ cS=data.frame(mu=apply(nS.cis[,nyears,],c(1),mean),
               species="C. libanotis",
               scen="base")
 
-################# <PERTUB NEIGHBORHOOD 
+################# PERTURB NEIGHBORHOOD 
+
+# LOAD DENSITIES WITH PERTURBED RAINFALL 
+
+load("h1_zero_rain.Rdata")
+load("h2_zero_rain.Rdata")
+load("l_zero_rain.Rdata")
+load("r_zero_rain.Rdata")
+load("c_zero_rain.Rdata")
+
+# Take averages across posterior parameters
+
+rain0_h1_mu=apply(rain0_h1,c(1,2),mean)
+rain0_h2_mu=apply(rain0_h2,c(1,2),mean)
+rain0_l_mu=apply(rain0_l,c(1,2),mean)
+rain0_c_mu=apply(rain0_c,c(1,2),mean)
+rain0_r_mu=apply(rain0_r,c(1,2),mean)
+
+
 
 nA.hal1 = array(NA,c(nsites,nyears,2100)) 
 nS.hal1 = array(NA,c(nsites,nyears,2100))
@@ -813,22 +831,20 @@ for(xx in 1:2100){
       
       ###   Neighborhood
       
-      if(t==14){
+      if(t<15){
+        neigh.c[i,t+1] <- log(rain0_h1_mu[i,t+1]+rain0_h2_mu[i,t+1] +rain0_l_mu[i,t+1]+rain0_r_mu[i,t+1])
+        neigh.h1[i,t+1] <-log(rain0_c_mu[i,t+1]+rain0_h2_mu[i,t+1]+rain0_l_mu[i,t+1]+rain0_r_mu[i,t+1])
+        neigh.h2[i,t+1] <- log(rain0_h1_mu[i,t+1]+rain0_c_mu[i,t+1]+rain0_l_mu[i,t+1]+rain0_r_mu[i,t+1])
+        neigh.l[i,t+1] <- log(rain0_h1_mu[i,t+1]+rain0_h2_mu[i,t+1] +rain0_c_mu[i,t+1]+rain0_r_mu[i,t+1])
+        neigh.r[i,t+1] <- log(rain0_h1_mu[i,t+1]+rain0_h2_mu[i,t+1] +rain0_l_mu[i,t+1]+rain0_c_mu[i,t+1])
         
-        neigh.c[i,t+1] <- apply(neigh.cis,1,mean)[i]
-        neigh.h1[i,t+1] <- apply(neigh.hal1,1,mean)[i]
-        neigh.h2[i,t+1] <- apply(neigh.hal2,1,mean)[i]
-        neigh.l[i,t+1] <- apply(neigh.lav,1,mean)[i]
-        neigh.r[i,t+1] <- apply(neigh.ros,1,mean)[i]
+        }else{
         
-      }else{
         neigh.c[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
         neigh.h1[i,t+1] <- log(NA.h2[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
         neigh.h2[i,t+1] <- log(NA.h1[i,t+1]+NA.l[i,t+1] +NA.r[i,t+1]+NA.c[i,t+1])
         neigh.l[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.r[i,t+1]+NA.h2[i,t+1])
         neigh.r[i,t+1] <- log(NA.h1[i,t+1]+NA.c[i,t+1] +NA.l[i,t+1]+NA.h2[i,t+1])
-        
-        
       }
       
       
