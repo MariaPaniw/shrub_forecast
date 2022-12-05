@@ -73,7 +73,7 @@ Scripts are meant to be run in the following order:
 
 5.	Forecast of abundances to 2022: **short_term_forecast.R**
 
-    - a.	*Input*: Palacio 2021 - 2022.csv; Doñana Number Plants 2022.csv ; precipPalacios.csv; shrub_number.csv; Cistus libanotis.Rdata; Halimium commutatum.Rdata; Lavandula stoechas.Rdata; Rosmarinus officinalis.Rdata; Halimium halimifolium.Rdata; allShrubs.Rdata
+    - a.	*Input*: Palacio 2021 - 2022.csv; Doñana Number Plants 2022.csv ; precipPalacios.csv; shrub_number.csv; Cistus libanotis.Rdata; Halimium commutatum.Rdata; Lavandula stoechas.Rdata; Rosmarinus officinalis.Rdata; Halimium halimifolium.Rdata; allShrubs.Rdata; denities of each shrub species asuming random rainfall variation and not decreasing rainfall trends (SPECIES_zero_rain.Rdata)
     - b.	*Output*: Forecasting skill statistics 
 
 6.	Perturbations of rainfall and density effects on demographic rates to assess effect on population growth rate: **shrub_perturbations.R**
